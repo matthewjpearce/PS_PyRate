@@ -1,0 +1,156 @@
+# YAML 1.1
+---
+Author: Matthew Pearce
+Date: 26.9.2022
+Name: PS
+Groups: {SU2L: SU2, SU2R: SU2, SU4c: SU4}
+
+Fermions: {
+    FL : {Gen: 3, Qnb: {SU2L: 2, SU2R: 1, SU4c: 4}},
+    FR : {Gen: 3, Qnb: {SU2L: 1, SU2R: 2, SU4c: 4}}
+}
+
+RealScalars: {
+    #Adjoint colour symmetry breaking field
+    Xi : {Qnb: {SU2L: 1, SU2R: 1, SU4c: 15}}
+}
+
+ComplexScalars: {
+    #SM Higgs promoted to bidoublet
+    Phi : {RealFields: [Phi1, Phi2],
+            Norm: 1/sqrt(2),
+            Qnb: {SU2L: 2, SU2R: -2, SU4c: 1}},
+    
+    #Left handed adjoint
+    DeltaL : {RealFields: [DeltaL1,DeltaL2],
+            Norm: 1/sqrt(2),
+            Qnb: {SU2L: 3, SU2R: 1, SU4c: [0,0,2]}},
+    
+    #Right handed adjoint
+    DeltaR : {RealFields: [DeltaR1,DeltaR2],
+            Norm: 1/sqrt(2),
+            Qnb: {SU2L: 1, SU2R: 3, SU4c: [0,0,2]}},
+    
+    #Adjoint colour/right field for gc unification
+    OmegaR : {RealFields: [OmegaR1,OmegaR2],
+            Norm: 1/sqrt(2),
+            Qnb: {SU2L: 1, SU2R: 3, SU4c: 15}}
+}
+
+
+Potential: {
+    Definitions: {
+        #SU(2) fundamental generators
+        tFundL : t(SU2L, 2),
+        tFundR : t(SU2R, 2),
+        
+        #Matrix representations of the Delta fields
+        DeltaL[i,j,b] : tFundL[a,i,j] DeltaL[a,b],
+        DeltaLDag[i,j,b] : tFundL[a,i,j] DeltaLbar[a,b],
+        
+        DeltaR[i,j,b] : tFundR[a,i,j] DeltaR[a,b],
+        DeltaRDag[i,j,b] : tFundR[a,i,j] DeltaRbar[a,b],
+                
+        #charge conjugated higgs doublet, SU(2)R indices
+        #are reversed in the second Eps
+        Phitilde[i,j] : Eps[i,k] Phibar[k,l] Eps[j,l]
+        
+        #Charge conjugated Delta fields for Majorana
+        #type couplings
+        DeltaLt[i,j,a] : Eps[i,k] DeltaL[k,j,a],
+        DeltaRt[i,j,a] : Eps[i,k] DeltaR[k,j,a],
+        
+        #Majorana type coupling SU(4) index CGCs
+        cL : cgc(SU4c, FL, DeltaL, FL),
+        cR : cgc(SU4c, FR, DeltaR, FR),
+    },
+
+    Yukawas: {
+        #Dirac type couplings to SM Higgs
+        YF1 : FLbar[i,a] Phi[i,j] FR[j,a],
+        YF2 : FLbar[i,a] Phitilde[i,j] FR[j,a],
+        
+        
+        #Majorana type couplings to adjoint
+        #fields for seesaw
+        MFL : {cL[a,b,c] FL[i,a] DeltaLt[i,j,b] FL[j,c],
+                real,symmetric},
+        MFR : {cR[a,b,c] FR[i,a] DeltaRt[i,j,b] FR[j,c],
+                real,symmetric}
+    },
+
+    QuarticTerms: {
+    },
+
+    ScalarMasses: {
+    }
+}
+
+Vevs: {
+}
+
+Substitutions: {
+    # Rename the gauge coupling constants
+    g_SU2L : g2L,
+    g_SU2R : g2R,
+    g_SU4c : g4,
+
+    # Substitutions for Yukawa matrices
+    YF1 : [0, 0, 'yF1'],
+    YF2 : [0, 0, 'yF2'],
+    MFL : ['fL1','fL2','fL3'],
+    MFR : ['fR1','fR2','fR3'],
+    
+    # alpha Substitutions
+    alpha2L : g2L**2 / (4 pi),
+    alpha2R : g2R**2 / (4 pi),
+    alpha4 : g4**2 / (4 pi),
+    alphayF1 : Abs(yF1)**2 / (4 pi),
+    alphayF2 : Abs(yF2)**2 / (4 pi),
+    alphafL1 : Abs(fL1)**2 / (4 pi),
+    alphafL2 : Abs(fL2)**2 / (4 pi),
+    alphafL3 : Abs(fL3)**2 / (4 pi),
+    alphafR1 : Abs(fR1)**2 / (4 pi),
+    alphafR2 : Abs(fR2)**2 / (4 pi),
+    alphafR3 : Abs(fR3)**2 / (4 pi)
+}
+
+Latex: {
+    # Particles
+    QL : Q_L,
+    QR : Q_R,
+    LL : L_L
+    LR : L_R,
+
+    Phi1 : \Phi_1,
+    Phi2 : \Phi_2,
+    DeltaL : \Delta_L,
+    DeltaL1 : \Delta_{L,1},
+    DeltaL2 : \Delta_{L,2},
+    DeltaR : \Delta_R,
+    DeltaR1 : \Delta_{R,1},
+    DeltaR2 : \Delta_{R,2},
+    Xi : \Xi
+    OmegaR : \Omega_R,
+    OmegaR1 : \Omega_{R,1},
+    OmegaR2 : \Omega_{R,2},
+
+    Phitilde : \tilde{\Phi},
+
+    # Couplings
+
+    g2L : g_{2,L},
+    g2R : g_{2,R},
+    g4 : g_4,
+
+    YF1 : Y_{F,1},
+    YF2 : Y_{F,2},
+    fL : f_L,
+    fR : f_R,
+
+    yt : y_t,
+    yb : y_b,
+    ytau: y_\tau,
+    ynu: t_\nu
+    alphat : \alpha_t
+}
